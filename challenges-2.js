@@ -1,114 +1,145 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable arrow-body-style */
 // ================================================================
 
-// Titanic Dataset challenges! 
+// Titanic Dataset challenges!
 
 // Your goal is to write some functions that will extract
-// relevant data from the dataset. 
+// relevant data from the dataset.
 
-// Write your code here in this file. 
+// Write your code here in this file.
 
 // *************************************
 // Test your code by running: `npm test`
 // *************************************
 
 // Each of the functions below expects to receive the Titanic data
-// as the parameter data. Your goal is to extract the relevant 
-// piece of information from the data and return it. 
+// as the parameter data. Your goal is to extract the relevant
+// piece of information from the data and return it.
 
 // ===============================================================
 
 // ---------------------------------------------------------------
 // 1 -------------------------------------------------------------
 // Return an array of all the values in data for a given property
-// For example if property = 'fare' the output should be a list of 
+// For example if property = 'fare' the output should be a list of
 // all fares something like: [7.3125, 15.75, 7.775, 10.5, ...]
 // Or if property = 'age' -> [40, 26, 22, 28, 23, 45, 21, ...]
 
 const getAllValuesForProperty = (data, property) => {
-	return []
-}
+  const values = data.map((passenger) => passenger.fields[property]);
+  return values;
+};
 
 // 2 -------------------------------------------------------------
 // Return an array where a given property matches the given value
-// For example property = 'sex' and value = 'male' returns an 
+// For example property = 'sex' and value = 'male' returns an
 // array of all the male passengers [{...}, {...}, {...}, ...]
 
 const filterByProperty = (data, property, value) => {
-	return []
-}
+  const filteredValues = data.filter((passenger) => passenger.fields[property] === value);
+  return filteredValues;
+};
 
 // 3 -------------------------------------------------------------
 // Filter out missing or null values
-// Return an array where the objects that have undefined for a 
+// Return an array where the objects that have undefined for a
 // given property have been removed
 
 const filterNullForProperty = (data, property) => {
-	return []
-}
+  const filteredValues = data.filter((passenger) => passenger.fields[property] !== undefined);
+  return filteredValues;
+};
 
 // 4 -------------------------------------------------------------
-// Abstract the sum by creating a function that returns the sum 
+// Abstract the sum by creating a function that returns the sum
 // for any (numeric) property
 // Return the total of all values for a given property. This
 
 const sumAllProperty = (data, property) => {
-	return 0
-}
-
+  const filteredValues = data.filter((passenger) => passenger.fields[property] !== undefined);
+  const sum = filteredValues.reduce((total, passenger) => {
+    return total + passenger.fields[property];
+  }, 0);
+  return sum;
+};
 
 // 5 -------------------------------------------------------------
-// Count unique values for property. The goal here is return an 
+// Count unique values for property. The goal here is return an
 // object with keys equal to the unique values for a property and
 // values equal to the number of times that property appears. For
-// example the embarked property has three unique values: S, C, 
-// and Q, and a couple passengers have undefined for this property. 
+// example the embarked property has three unique values: S, C,
+// and Q, and a couple passengers have undefined for this property.
 // So the output should be: { S: 644, C: 168, Q: 77, undefined: 2 }
-// That is 644 passengers embarked at South Hampton. 168 embarked 
+// That is 644 passengers embarked at South Hampton. 168 embarked
 // at Cherbourg, 77 emabrked at Queenstown, and 2 are undedfined
 
 const countAllProperty = (data, property) => {
-	return {}
-}
-
+  const uniqueValues = data.reduce((total, passenger) => {
+    const value = passenger.fields[property];
+    if (total[value]) {
+      total[value] += 1;
+      return total;
+    }
+    return { [value]: 1, ...total };
+  }, {});
+  return uniqueValues;
+};
 
 // 6 ------------------------------------------------------------
-// Make histogram. The goal is to return an array with values 
+// Make histogram. The goal is to return an array with values
 // of a properties divided into buckets and counting the number
 // of items in each bucket.
 
 const makeHistogram = (data, property, step) => {
-	return []
-}
+  const filtered = data.filter((passenger) => passenger.fields[property] !== undefined);
+
+  const uniqueValues = filtered.reduce((acc, passenger) => {
+    if (acc[Math.floor(passenger.fields[property] / step)] === undefined) {
+      acc[Math.floor(passenger.fields[property] / step)] = 1;
+    } else {
+      acc[Math.floor(passenger.fields[property] / step)] += 1;
+    }
+    return acc;
+  }, []);
+  return Array.from(uniqueValues, (value) => value || 0);
+};
 
 // 7 ------------------------------------------------------------
-// normalizeProperty takes data and a property and returns an 
+// normalizeProperty takes data and a property and returns an
 // array of normalized values. To normalize the values you need
 // to divide each value by the maximum value in the array.
 
 const normalizeProperty = (data, property) => {
-	return []
-}
+  const filtered = data.filter((passenger) => passenger.fields[property] !== undefined);
+  const values = filtered.map((passenger) => passenger.fields[property]);
+  const maxValue = Math.max(...values);
+  const normalized = values.map((v) => v / maxValue);
+  return normalized;
+};
 
 // 8 ------------------------------------------------------------
-// Write a function that gets all unique values for a property. 
+// Write a function that gets all unique values for a property.
 // Given the array of data and a property string it should return
-// an array of all of the unique values under that property. 
-// For example if the property string were "sex" this function 
+// an array of all of the unique values under that property.
+// For example if the property string were "sex" this function
 // would return ['male', 'female']
 
 const getUniqueValues = (data, property) => {
-	return []
-}
+  const uniqueValues = data.map((passenger) => passenger.fields[property]);
+  const value = uniqueValues.reduce((total, v) => total.add(v), new Set());
+  return Array.from(value);
+};
 
 // --------------------------------------------------------------
 // --------------------------------------------------------------
 module.exports = {
-	getAllValuesForProperty,
-	filterByProperty,
-	filterNullForProperty,
-	sumAllProperty,
-	countAllProperty,
-	makeHistogram,
-	normalizeProperty,
-	getUniqueValues
-}
+  getAllValuesForProperty,
+  filterByProperty,
+  filterNullForProperty,
+  sumAllProperty,
+  countAllProperty,
+  makeHistogram,
+  normalizeProperty,
+  getUniqueValues,
+};
